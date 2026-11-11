@@ -9,7 +9,7 @@ internal class Program
         string dataDirectory = Path.Combine(
             AppContext.BaseDirectory,
             "Data");
-
+         
         Directory.CreateDirectory(dataDirectory);
 
         string filePath = Path.Combine(
