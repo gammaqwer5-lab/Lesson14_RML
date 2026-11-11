@@ -7,10 +7,10 @@
 // - `StreamReader` не должен закрывать чужой ресурс.
 public sealed class FileStorage : IDisposable
 {
-    // Класс владеет потоком. Значит, он обязан освободить его.
+	// Класс владеет потоком. Значит, он обязан освободить его.
     private readonly FileStream _stream;
 
-    // Позволяет контролировать повторный вызов методов после освобождения.
+	// Позволяет контролировать повторный вызов методов после освобождения.
     private bool _disposed;
 
     public FileStorage(string filePath)
@@ -38,9 +38,9 @@ public sealed class FileStorage : IDisposable
 
         _stream.Position = 0;
 
-        // Почему в `StreamReader` указано `leaveOpen: true`?
-        // Потому что `StreamReader` создаётся временно только для чтения. 
-        // Он не должен закрывать поток, которым владеет `FileStorage`.
+		// Почему в `StreamReader` указано `leaveOpen: true`?
+		// Потому что `StreamReader` создаётся временно только для чтения. 
+		// Он не должен закрывать поток, которым владеет `FileStorage`.
         using var reader = new StreamReader(
             _stream,
             System.Text.Encoding.UTF8,
@@ -57,7 +57,7 @@ public sealed class FileStorage : IDisposable
         {
             return;
         }
-        // Закрывает принадлежащий классу файловый поток.
+		// Закрывает принадлежащий классу файловый поток.
         _stream.Dispose();
 
         _disposed = true;
@@ -67,7 +67,7 @@ public sealed class FileStorage : IDisposable
 
     private void ThrowIfDisposed()
     {
-        // Не позволяет использовать объект после `Dispose()`.
+	    // Не позволяет использовать объект после `Dispose()`.
         ObjectDisposedException.ThrowIf(
             _disposed,
             this);

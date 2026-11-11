@@ -4,7 +4,7 @@ namespace ResourceManagementLab;
 
 internal class Program
 {
-    private static void Main()
+    private static async Task Main()
     {
         string dataDirectory = Path.Combine(
             AppContext.BaseDirectory,
@@ -73,6 +73,43 @@ internal class Program
         Console.WriteLine("5. Демонстрация GC");
 
         MemoryDemo.Run();
+
+        Console.WriteLine();
+        Console.WriteLine("6. Проверка владений ресурсов");
+
+        using (var stream = new FileStream(
+            filePath,
+            FileMode.OpenOrCreate,
+            FileAccess.ReadWrite))
+        {
+            stream.Position = 0;
+
+            using (var reader = new StreamReader(
+                stream,
+                System.Text.Encoding.UTF8,
+                detectEncodingFromByteOrderMarks: true,
+                bufferSize: 1024,
+                leaveOpen: true))
+
+            Console.WriteLine($"Поток доступен после Dispose() reader: {stream.CanRead}");
+
+            stream.Position = 0;
+            using var writer = new StreamWriter(
+                stream,
+                System.Text.Encoding.UTF8,
+                bufferSize: 1024,
+                leaveOpen: true);
+            writer.Write("Запись после чтения");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("7. Асинхронное освобождение и запись");
+
+        await using (var asyncStorage = new AsyncFileStorage(filePath))
+        {
+            await asyncStorage.WriteAsync("dddd");
+            await asyncStorage.DisposeAsync();
+        }
 
         Console.WriteLine();
         Console.WriteLine("Работа программы завершена.");
